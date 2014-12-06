@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html ng-app="Nopad" ng-csp>
+    <head>
+	<style>
+	@charset "UTF-8";
+
+	[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],
+	.ng-cloak, .x-ng-cloak,
+	.ng-hide:not(.ng-hide-animate) {
+	  display: none !important;
+	}
+
+	ng\:form {
+	  display: block;
+	}
+
+	</style>
+        <link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+		
+        <script src="js/lib/angular.min.js"></script>
+		<script src="js/lib/UUID.js"></script>
+        <script src="js/app/app.js"></script>
+		<script src="js/app/filter.js"></script>
+        <script src="js/app/noteCtrl.js"></script>
+    </head>
+    <body ng-controller="noteCtrl">
+        <header>
+            <h1><i class="fa fa-file-o" style="margin-right:5px;"></i>Nopad, the quick pad.
+				<button ng-click="loadNotes()"><i class="fa fa-refresh"></i></button>
+				<button ng-click="newNote()"><i class="fa fa-plus"></i></button>
+				<!--<button ng-click="deleteNotes()">Delete storage</button>-->
+			</h1>
+        </header>
+        <div>
+            <div class="note" ng-show="activeNote">
+				<h5>
+					<label>Title: <input ng-model="activeNote.title" ng-keyup="changed();"></input></label>
+					<small ng-hide="activeNote.new">Saved {{activeNote.date | timeSinceFilter}}</small>
+				</h2>
+				<textarea ng-model="activeNote.body" ng-keyup="changed();"></textarea>
+			</div>
+        </div>
+		<div class="note-list">
+			<table cellspacing="10">
+				<thead>
+					<tr>
+						<th><h5>Notes</h5></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td colspan="2">
+							<div class="scroll-container">
+								<table>
+									<tbody>
+										<tr ng-repeat="note in notes | orderBy:'title'" ng-class="{'active':note.active}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
+											<td ng-click="changeNote(note)" >{{note.title}}<br/><small>{{note.date | timeSinceFilter}}</small></td>
+											<td>
+												<i ng-hide="note.id != activeNote.id" class="fa fa-trash-o" ng-click="deleteNote($index)"></i>
+												<i ng-hide="note.id != activeNote.id" class="fa fa-save" ng-click="saveNote(activeNote)"></i>
+												</td>
+										</tr>
+									</table>
+								</tbody>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+    </body>
+</html>
