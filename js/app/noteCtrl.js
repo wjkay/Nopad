@@ -59,6 +59,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 	}
 	
 	$scope.loadNote = function(note) {
+		$scope.editingTitle = false;
 		chrome.storage.sync.get(note.id, function(body){
 			note.body = body[note.id];
 			$scope.activeNote = note;

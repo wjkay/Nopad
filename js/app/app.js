@@ -1,4 +1,4 @@
-var Nopad = angular.module('Nopad', []);
+var Nopad = angular.module('Nopad', ['monospaced.elastic']);
 
 
 Nopad.factory('page', function() {

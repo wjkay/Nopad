@@ -8,7 +8,7 @@
 
   "permissions": [ "http://*/*","https://*/*", "storage" ],
   "browser_action": {
-    "default_icon": "img/icon_16.ico",
+    "default_icon": "img/icon.png",
     "default_popup": "main.html",
 	"default_title": "Nopad, the quick pad."
   },
