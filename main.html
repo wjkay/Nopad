@@ -45,16 +45,12 @@
 				</span>
 			</h1>
         </header>
-        <div>
-            <div class="note" ng-show="activeNote">
-				<textarea ng-model="activeNote.body" ng-keyup="changed();"></textarea>
-			</div>
-        </div>
+		<div class="note" ng-show="activeNote">
+			<textarea ng-model="activeNote.body" ng-keyup="changed();"></textarea>
+		</div>
 		<div class="note-list">
-			<table cellspacing="10">
-				
+			<table cellspacing="0">
 				<tbody>
-					
 					<tr>
 						<td colspan="2">
 							<div class="scroll-container">
@@ -67,17 +63,17 @@
 												<i class="fa" ng-class="{'fa-sort-amount-desc':reverse,'fa-sort-amount-asc':!reverse,'active':predicate=='date'}" ng-click="predicate = 'date'; reverse = !reverse"></i>
 											</td>
 										</tr>
-										<tr ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes | filter:searchText)| orderBy:predicate:reverse;" ng-class="{'active':note.active}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
+										<tr ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes | filter:{trashed: false} | filter:searchText)| orderBy:predicate:reverse;" ng-class="{'active':note.active}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
 											<td ng-click="changeNote(note)" >
 											
 												<span ng-hide="note.active && editingTitle">{{note.title}} <i ng-show="note.active && !editingTitle" style="float:right;" class="fa fa-pencil" ng-click="editingTitle = true;"></i></span>
-												<textarea ng-show="note.active && editingTitle" ng-model="note.title" ng-keyup="changed();" msd-elastic ></textarea>
+												<input ng-show="note.active && editingTitle" ng-model="note.title" ng-keyup="changed();" msd-elastic ></textarea>
 												
 												<br/><small>{{note.date | timeSinceFilter}}</small>
-											
+												{{note.trashed}}
 												<i style="float:right;" ng-hide="note.id != activeNote.id && hover.id != note.id" class="fa fa-trash-o fa-l" ng-click="deleteNote($index)"></i>
 												<i style="float:right;" ng-hide="note.id != activeNote.id" class="fa fa-save fa-l" ng-click="saveNote(activeNote)"></i>
-												</td>
+											</td>
 										</tr>
 									</table>
 								</tbody>

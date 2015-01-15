@@ -14,8 +14,7 @@ function (request, sender, sendResponse) {
             
             var href = $(this).attr('href');
 
-            if (href != null && href.indexOf("http") == 0)
-            {
+            if (href != null && href.indexOf("http") == 0) {
                 //only add urls that start with http
                 pageInfo.url = href
                 pageInfos.push(pageInfo);

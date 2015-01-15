@@ -1,12 +1,12 @@
 /*----------- Header styles -----------*/
-header {background-color:#3F85F4;padding:3px;height: 14px;margin-bottom: 10px;}
-header h1 {font-size:12px;color:white;font-weight:bold;margin: 0;}
+header {background-color:#3F85F4;padding:3px;height: 14px;margin:0;}
+header h1 {font-size:12px;color:white;font-weight:bold;margin:0;}
 header > h1 > i {font-size:12px;}
 header > h1 > div {float:right;text-align:left;}
 header > h1 > div > button {margin-right:3px;float:right;color:white;}
 
 /*----------- Body styles -----------*/
-body {padding:0;color:#302e2f;font-family:Arial,sans-serif;width:767px;height:495px;overflow:hidden;background-color:rgb(255,255,255);}
+body {padding:0;margin:0;color:#302e2f;font-family:Arial,sans-serif;width:767px;min-height:255px;overflow:hidden;background-color:rgb(255,255,255);}
 
 button {font-size:13px;cursor:pointer;border:0;background:0;padding:0px 3px 1px 3px;}
 button:focus {border:0;}
@@ -17,25 +17,25 @@ small {font-size:10px; bottom-border:1px solid #3F85F4;}
 
 .fa-l {font-size:14px;cursor:pointer;}
 
-.note {float:left;width:73%;}
-.note > textarea {width:102%;height:480px;border:1px solid #3F85F4;}
+.note {float:left;width:581px;}/* 761-581 */
+.note > textarea {width:100%;min-height:255px;resize:vertical;border:1px solid #3F85F4;border-top:0;margin-bottom:-3px;}
  
-.note-list {float:right;width:25%;height:100%;overflow:auto;}
-.note-list > table {height:94%;}
+.note-list {float:right;width:180px;min-height:255px;height:100%;overflow:hidden;}
+.note-list > table {width:180px;min-height:255px;height:100%;}
+.note-list > table > tbody > tr > td {padding:0;}
 
-
-.search {font-family:'FontAwesome';position:absolute;top:26px;content:"\f007";}    
+.search {font-family:'FontAwesome';position:absolute;top:7px;content:"\f007";}    
 .search:before {position:absolute;color:#3F85F4;font-family:FontAwesome;top:3px;left:3px;content: "\f002";}
-.search > input {width:88%;padding-left:15px;}
+.search > input {width:162px;padding-left:15px;}
 
 .active{color:#3F85F4;}
 .active > td{border-bottom:1px solid #3F85F4;border-top:1px solid #3F85F4;}
 
 .scroll-container {height:100%;overflow:hidden;overflow-y:auto;width:107%;}
-.scroll-container > table {border-spacing:0;border-collapse:collapse;}
+.scroll-container > table {width:180px;border-spacing:0;border-collapse:collapse;}
 .scroll-container > table > tbody > tr:not(:first-child):hover {background-color: #3F85F4;color: white;/* font-weight: bold; border-color: black;border-style: solid;border-width: 1px;/* padding-bottom: 0px; */}
 .scroll-container > table > tbody > tr:not(:first-child) > td {margin:0;padding:4px 0px 3px 4px;cursor:pointer;border-color-top:rgba(0,0,0,0.2);border-top-style:solid;border-top-width:1px;}
-.scroll-container > table > tbody > tr:first-child > td {padding: 12px 0px 4px 0px;}
+.scroll-container > table > tbody > tr:first-child > td {padding: 21px 0px 4px 0px;}
 .scroll-container > table > tbody > tr > td:last-child {padding-right:6px;}
 .scroll-container > table > tbody > tr > td > i {margin-right:2px;}
 .scroll-container > table > tbody > tr > td > textarea {min-height:15px;border:1px solid #3F85F4;color:#3F85F4;width:97%;}
