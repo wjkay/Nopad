@@ -24,3 +24,10 @@ function (request, sender, sendResponse) {
         sendResponse(pageInfos);
     }
 });
+
+
+// helper to delete all notes
+deleteNotes = function () {
+	chrome.storage.local.clear();
+	chrome.storage.sync.clear();
+}

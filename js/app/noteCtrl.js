@@ -3,18 +3,23 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 
 	$scope.notes = [];
 	$scope.noteService = noteService;
-	
+	$scope.autoSave = {};
+		
 	// Functions
-	$scope.changed = function () {
-		$timeout.cancel($scope.autoSave);	
-		$scope.autoSave = $timeout(function() {
-			if ($scope.activeNote.title) {
-				$scope.activeNote.save();
-			}
-		}, 5000);
+	$scope.changed = function (note) {
+		note.changed = true;
+		$timeout.cancel($scope.autoSave[note.id]);	
+		$scope.autoSave[note.id] = $timeout(function() {
+			$scope.autoSave[note.id] = null;
+			note.save();
+		}, 3000);
 	}
 	
 	$scope.changeNote = function (note) {
+		// Save existing note first
+		if ($scope.activeNote && $scope.activeNote.changed) {
+			$scope.activeNote.save();
+		}
 		// Update active index
 		chrome.storage.sync.get('index', function (syncIndex) {
 			syncIndex = syncIndex.index
@@ -31,41 +36,28 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 		});
 	}
 	
-	$scope.deleteNote = function (index) {
-		// Update active index
-		var note = $scope.notes[index];
-		
-		// Delete if trashed
-		if (!note.trashed) {
-			note.trashed = true;
-			note.save();
+	$scope.deleteNote = function (note) {
+		if ($scope.activeNote == note) {
+			$scope.activeNote = null;
 		}
-		else {
-			chrome.storage.sync.get('index', function (syncIndex) {
-				syncIndex = syncIndex.index
-				
-				delete syncIndex[note.id]
-				
-				chrome.storage.local.remove(note.id, function() {			
-					chrome.storage.sync.remove(note.id, function() {			
-						console.log('deleted: ', note.title);
-						
-					
-						
-						chrome.storage.local.set({'index': syncIndex})
-						chrome.storage.sync.set({'index': syncIndex})
-						
-						$scope.loadNotes();
-						$scope.$apply();
+	
+		chrome.storage.sync.get('index', function (syncIndex) {
+			syncIndex = syncIndex.index;
+			$timeout.cancel($scope.autoSave[note.id]);	
+			
+			delete syncIndex[note.id];
+			
+			chrome.storage.local.set({'index': syncIndex}, function() {
+				chrome.storage.sync.set({'index': syncIndex}, function() {
+					chrome.storage.local.remove(note.id, function() {			
+						chrome.storage.sync.remove(note.id, function() {			
+							$scope.loadNotes();
+							$scope.$apply();
+						});
 					});
 				});
 			});
-		}
-	}
-	
-	deleteNotes = function () {
-		chrome.storage.local.clear();
-		chrome.storage.sync.clear();
+		});
 	}
 	
 	$scope.loadNote = function(note) {
@@ -103,15 +95,15 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 			var foundActive = false;
 			for (i in syncIndex) {
 				
-				var note = noteService.newNote(syncIndex[i].title, null, syncIndex[i].date, i, syncIndex[i].active, syncIndex[i].trashed)
+				var note = noteService.newNote(syncIndex[i].title, null, syncIndex[i].date, i, syncIndex[i].active)
 				$scope.notes.push(note);
 				if (syncIndex[i].active) {
 					$scope.loadNote(syncIndex[i]);
 					foundActive = true;
 				}
 			}
-			console.log('---Loading---');
-			console.table($scope.notes);
+			//console.log('---Loading---');
+			//console.table($scope.notes);
 			if (!foundActive) {
 				if ($scope.notes.length > 0) {
 					$scope.notes[0].active = true;
@@ -128,7 +120,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 	//$scope.$watch('notes',function(newv, oldv) {console.log('Notes changed: ', newv, oldv)})
 	
 	$scope.newNote = function () { 
-		$scope.activeNote = noteService.newNote('New Note', '', '', '', true, false);
+		$scope.activeNote = noteService.newNote('New Note', '', '', '', true);
 		$scope.activeNote.save();
 	}
 	
@@ -155,13 +147,12 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 
 Nopad.service('noteService', function() {
 	return {
-		newNote: function (title, body, date, id, active, trashed) {
+		newNote: function (title, body, date, id, active) {
 			var note = {};
 			note.title = title;
 			note.body = body;
 			note.date = date;
 			note.active = active;
-			note.trashed = trashed || false;
 			if (id) {
 				note.id = id;
 			}
@@ -170,25 +161,24 @@ Nopad.service('noteService', function() {
 				note.new = true;
 			}
 			
-			note.save = function (localOnly) {
-				
+			note.save = function () {
 				chrome.storage.sync.get('index', function (syncIndex) {
 					syncIndex = syncIndex.index;
 					if (!syncIndex) {syncIndex = {};}
 					
 					note.date = Date.now();
 					note.new = false;
+					note.changed = false;
 					
 					// Inactivate others
 					//for (i in syncIndex) {syncIndex[i].active = false;}
-					console.log(note.trashed)
-					syncIndex[note.id] = {"id":note.id,"title":note.title,"date":note.date,"active":note.active,"trashed":note.trashed};
+					syncIndex[note.id] = {"id":note.id,"title":note.title,"date":note.date,"active":note.active};
 					
 					chrome.storage.local.set({'index': syncIndex})
 					chrome.storage.sync.set({'index': syncIndex})
 					
-					console.log('---Saving---');
-					console.table(syncIndex);
+					//console.log('---Saving---');
+					//console.table(syncIndex);
 					
 					// Save note
 					var toStore = {};
@@ -196,16 +186,11 @@ Nopad.service('noteService', function() {
 					chrome.storage.local.set(toStore)
 					chrome.storage.sync.set(toStore)
 
-					loadNotes();
+					
 				});
 			}
-
 			return note;
 		},
-		
-		
-		
-		
 	}
 });
 
