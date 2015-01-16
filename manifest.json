@@ -4,7 +4,7 @@
   "name": "Nopad",
   "version": "0.1",
   "author": "Will Kehayioff",
-  "description": "Quick note pad extension.",
+  "description": "The fastest note pad extension available! Nopad makes notes in no time and syncs to your chrome account, which updates all of your devices.",
 
   "permissions": [ "http://*/*","https://*/*", "storage" ],
   "browser_action": {

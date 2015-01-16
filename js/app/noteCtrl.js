@@ -6,16 +6,34 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 	$scope.autoSave = {};
 		
 	// Functions
-	$scope.changed = function (note) {
+	$scope.changed = function (note, isTitle, event) {
 		note.changed = true;
 		$timeout.cancel($scope.autoSave[note.id]);	
+		
+		// Enter to save note
+		if (event) {
+			if (event.which == '13') {
+				$scope.autoSave[note.id] = null;
+				note.editingTitle = false;
+				if (note.newTitle) {
+					note.title = note.newTitle;
+				}
+				note.save();
+			}
+		}
+		
 		$scope.autoSave[note.id] = $timeout(function() {
 			$scope.autoSave[note.id] = null;
+			note.editingTitle = false;
+			if (note.newTitle) {
+				note.title = note.newTitle;
+			}
 			note.save();
-		}, 3000);
+		}, 500);
 	}
 	
 	$scope.changeNote = function (note) {
+		$scope.activeNote.editingTitle = false;
 		// Save existing note first
 		if ($scope.activeNote && $scope.activeNote.changed) {
 			$scope.activeNote.save();
@@ -61,7 +79,6 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 	}
 	
 	$scope.loadNote = function(note) {
-		$scope.editingTitle = false;
 		chrome.storage.sync.get(note.id, function(body){
 			note.body = body[note.id];
 			$scope.activeNote = note;
@@ -69,6 +86,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 
 			angular.forEach($scope.notes, function (n) {
 				n.active = (n.id == note.id);
+				
 			})
 			
 			// Update active index
@@ -121,7 +139,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 	
 	$scope.newNote = function () { 
 		$scope.activeNote = noteService.newNote('New Note', '', '', '', true);
-		$scope.activeNote.save();
+		$scope.activeNote.save($scope.loadNotes);
 	}
 	
 
@@ -161,14 +179,18 @@ Nopad.service('noteService', function() {
 				note.new = true;
 			}
 			
-			note.save = function () {
+			note.save = function (callback) {
 				chrome.storage.sync.get('index', function (syncIndex) {
 					syncIndex = syncIndex.index;
 					if (!syncIndex) {syncIndex = {};}
-					
+					if (note.newTitle) {
+						note.title = note.newTitle;
+						note.newTitle = '';
+					}
 					note.date = Date.now();
 					note.new = false;
 					note.changed = false;
+					
 					
 					// Inactivate others
 					//for (i in syncIndex) {syncIndex[i].active = false;}
@@ -184,7 +206,11 @@ Nopad.service('noteService', function() {
 					var toStore = {};
 					toStore[note.id] = note.body;
 					chrome.storage.local.set(toStore)
-					chrome.storage.sync.set(toStore)
+					chrome.storage.sync.set(toStore, function() {
+						if (callback) {
+							callback();
+						}
+					})
 
 					
 				});

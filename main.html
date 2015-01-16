@@ -59,14 +59,14 @@
 											<td>
 												<p class="search"><input ng-model="searchText" class=""></input></p>
 												<i class="fa" ng-class="{'fa-sort-alpha-desc':reverse,'fa-sort-alpha-asc':!reverse,'active':predicate=='title'}" ng-click="predicate = 'title'; reverse = !reverse" ng-init="predicate = 'title'"></i>
-												<i class="fa" ng-class="{'fa-sort-amount-desc':reverse,'fa-sort-amount-asc':!reverse,'active':predicate=='date'}" ng-click="predicate = 'date'; reverse = !reverse"></i>
+												<i class="fa" ng-class="{'fa-sort-amount-asc':reverse,'fa-sort-amount-desc':!reverse,'active':predicate=='date'}" ng-click="predicate = 'date'; reverse = !reverse"></i>
 											</td>
 										</tr>
-										<tr ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes  | filter:searchText)| orderBy:predicate:reverse;" ng-class="{'active':note.active}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
+										<tr ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes | orderBy:'active'  | filter:searchText)| orderBy:predicate:reverse;" ng-class="{'active':note.active}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
 											<td ng-click="changeNote(note)" >
 											
-												<span ng-hide="note.active && editingTitle">{{note.title}} <i ng-show="note.active && !editingTitle" style="float:right;" class="fa fa-pencil" ng-click="editingTitle = true;"></i></span>
-												<input ng-show="note.active && editingTitle" ng-model="note.title" ng-keyup="changed(note);" msd-elastic ></textarea>
+												<span ng-hide="note.active && note.editingTitle">{{note.title}} <i ng-show="note.active && !note.editingTitle" style="float:right;" class="fa fa-pencil" ng-click="note.newTitle = note.title; note.editingTitle = true;"></i></span>
+												<input ng-show="note.active && note.editingTitle" ng-model="note.newTitle" ng-keyup="changed(note, true, $event);" msd-elastic ></textarea>
 												
 												<br/><small>{{note.date | timeSinceFilter}}</small>
 												<i style="float:right;" ng-hide="note.id != activeNote.id && hover.id != note.id" class="fa fa-trash-o fa-l" ng-click="deleteNote(note)"></i>
