@@ -8,3 +8,14 @@ Nopad.factory('page', function() {
      setTitle: function(newTitle) { title = newTitle }
    };
 });
+
+Nopad.directive('stopEvent', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attr) {
+            element.bind('click', function (e) {
+                e.stopPropagation();
+            });
+        }
+    };
+ });

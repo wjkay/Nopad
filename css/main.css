@@ -11,7 +11,7 @@ body {padding:0;margin:0;color:#302e2f;font-family:Arial,sans-serif;width:767px;
 button {font-size:13px;cursor:pointer;border:0;background:0;padding:0px 3px 1px 3px;}
 button:focus {border:0;}
 h5 {border-bottom:1px;font-size:14px;margin:0;}
-input {border:1px solid #3F85F4;color:#3F85F4;width:90%;}
+input {border:1px solid #3F85F4;color:#3F85F4;width:81%;}
 label {font-size:10px;}
 small {font-size:10px; bottom-border:1px solid #3F85F4;}
 

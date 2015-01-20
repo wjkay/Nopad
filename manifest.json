@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Nopad",
-  "version": "0.1",
+  "version": "0.1.2",
   "author": "Will Kehayioff",
   "description": "The fastest note pad extension available! Nopad makes notes in no time and syncs to your chrome account on all devices.",
 
@@ -12,10 +12,7 @@
     "default_popup": "main.html",
 	"default_title": "Nopad, the quick pad."
   },
-  "content_scripts": [{
-	"js":["js/app/content.js"],
-	"matches":["*://*/*"],
-	"run_at": "document_start"
-  }]
-  
+  "background": {
+    "scripts": ["/js/background.js"]
+  }
 }
