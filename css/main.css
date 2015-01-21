@@ -1,6 +1,7 @@
+html {border: #3F85F4 1px solid;margin-top: -2px;}
 /*----------- Header styles -----------*/
-header {background-color:#3F85F4;padding:3px;height: 14px;margin:0;}
-header h1 {font-size:12px;color:white;font-weight:bold;margin:0;}
+header {background-color:#3F85F4;padding:5px 3px 0px 3px;height: 15px;margin:0;}
+header h1 {font-size:12px;color:white;font-weight:bold;margin:-1px;}
 header > h1 > i {font-size:12px;}
 header > h1 > div {float:right;text-align:left;}
 header > h1 > div > button {margin-right:3px;float:right;color:white;}
@@ -13,31 +14,35 @@ button:focus {border:0;}
 h5 {border-bottom:1px;font-size:14px;margin:0;}
 input {border:1px solid #3F85F4;color:#3F85F4;width:81%;}
 label {font-size:10px;}
-small {font-size:10px; bottom-border:1px solid #3F85F4;}
+small {font-size:9px; bottom-border:1px solid #3F85F4;}
 
 .fa-l {font-size:14px;cursor:pointer;}
 
-.note {float:left;width:581px;}/* 761-581 */
-.note > textarea {width:100%;min-height:255px;resize:vertical;border:1px solid #3F85F4;border-top:0;margin-bottom:-3px;}
+.note {float:left;width:581px;margin:0 0 0 -1px;}/* 761-581 */
+.note > textarea {width:100%;min-height:255px;max-height:575px;resize:vertical;border:1px solid #3F85F4;border-top:0;margin-bottom:-4px;}
+.note > span {height:10px;position:fixed;bottom:0;left:2px;font-weight:700;color:#3F85F4;margin:5px 0px;}
+.note > span:hover {background:white;}
  
-.note-list {float:right;width:180px;min-height:255px;height:100%;overflow:hidden;}
-.note-list > table {width:180px;min-height:255px;height:100%;}
+.note-list {float:right;width:181px;min-height:255px;height:100%;overflow:hidden;}
+.note-list > table {width:100%;min-height:255px;height:100%;}
 .note-list > table > tbody > tr > td {padding:0;}
 
-.search {font-family:'FontAwesome';position:absolute;top:7px;content:"\f007";}    
+.search {font-family:'FontAwesome';position:absolute;top:6px;content:"\f007";}    
 .search:before {position:absolute;color:#3F85F4;font-family:FontAwesome;top:3px;left:3px;content: "\f002";}
-.search > input {width:162px;padding-left:15px;}
+.search > input {height:14px;width:134px;padding-left:15px;margin-left:-1px;}
 
 .active{color:#3F85F4;}
 .active > td{border-bottom:1px solid #3F85F4;border-top:1px solid #3F85F4;}
 
-.scroll-container {height:100%;overflow:hidden;overflow-y:auto;width:107%;}
-.scroll-container > table {width:180px;border-spacing:0;border-collapse:collapse;}
+.scroll-container {height:100%;width:100%;overflow:hidden;overflow-y:auto;padding:0;margin: -1px 0 0 0;}
+.scroll-container > table {width:100%;border-spacing:0;border-collapse:collapse;}
 .scroll-container > table > tbody > tr:not(:first-child):hover {background-color: #3F85F4;color: white;/* font-weight: bold; border-color: black;border-style: solid;border-width: 1px;/* padding-bottom: 0px; */}
 .scroll-container > table > tbody > tr:not(:first-child) > td {margin:0;padding:4px 0px 3px 4px;cursor:pointer;border-color-top:rgba(0,0,0,0.2);border-top-style:solid;border-top-width:1px;}
-.scroll-container > table > tbody > tr:first-child > td {padding: 21px 0px 4px 0px;}
-.scroll-container > table > tbody > tr > td:last-child {padding-right:6px;}
-.scroll-container > table > tbody > tr > td > i {margin-right:2px;}
+.scroll-container > table > tbody > tr:first-child > td {padding: 2px 0px 3px 0px;border-bottom:#3F85F4 1px solid;}
+.scroll-container > table > tbody > tr:last-child > td {padding: 2px 0px 3px 0px;border-bottom:black 1px solid;}
+.scroll-container > table > tbody > tr:first-child > td > i {float:right;}
+.scroll-container > table > tbody > tr > td:last-child {padding-right:3px;}
+.scroll-container > table > tbody > tr > td > i {margin: 1px 0 -1px 3px;}
 .scroll-container > table > tbody > tr > td > textarea {min-height:15px;border:1px solid #3F85F4;color:#3F85F4;width:97%;}
 
 /* ----------- Scroll bar styles ----------- */

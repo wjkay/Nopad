@@ -45,7 +45,8 @@
 			</h1>
         </header>
 		<div class="note" ng-show="activeNote">
-			<textarea ng-model="activeNote.body" ng-keyup="changed(activeNote);"></textarea>
+			<textarea ng-model="activeNote.body" ng-keyup="changed(activeNote);" maxlength=8000></textarea>
+			<span>{{activeNote.body.length}} / 8000</span>
 		</div>
 		<div class="note-list">
 			<table cellspacing="0">
@@ -57,9 +58,9 @@
 									<tbody>
 										<tr>
 											<td>
-												<p class="search"><input ng-model="searchText" class=""></input></p>
-												<i class="fa" ng-class="{'fa-sort-alpha-desc':reverse,'fa-sort-alpha-asc':!reverse,'active':predicate=='title'}" ng-click="predicate = 'title'; reverse = !reverse" ng-init="predicate = 'title'"></i>
+												<p class="search"><input ng-model="searchText" ng-init="predicate = 'date';reverse = true"></input></p>
 												<i class="fa" ng-class="{'fa-sort-amount-asc':reverse,'fa-sort-amount-desc':!reverse,'active':predicate=='date'}" ng-click="predicate = 'date'; reverse = !reverse"></i>
+												<i class="fa" ng-class="{'fa-sort-alpha-desc':reverse,'fa-sort-alpha-asc':!reverse,'active':predicate=='title'}" ng-click="predicate = 'title'; reverse = !reverse"></i>
 											</td>
 										</tr>
 										<tr ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes | orderBy:'active'  | filter:searchText)| orderBy:predicate:reverse;" ng-class="{'active':note.active}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
