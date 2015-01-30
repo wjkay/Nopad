@@ -46,7 +46,7 @@
         </header>
 		<div class="note" ng-show="activeNote">
 			<textarea ng-model="activeNote.body" ng-keyup="changed(activeNote);" maxlength=8000></textarea>
-			<span>{{activeNote.body.length}} / 8000</span>
+			<span ng-show="activeNote.body.length > 4000">{{activeNote.body.length}} / 8000</span>
 		</div>
 		<div class="note-list">
 			<table cellspacing="0">
