@@ -163,71 +163,23 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 	}
 	
 	$scope.editTitle = function (note) {
-		
 		note.newTitle = note.title;
 		note.editingTitle = true;
-		console.log('Editing title: ', note.editingTitle, note.active)
 	}
+	
+	$scope.exportNotes = function () {
+		noteService.exportNotes();
+	}
+
+	$scope.importNotes = function () {
+		document.getElementById('importInput').click();
+	}
+	document.getElementById('importInput').addEventListener('change', function (e) {
+		noteService.importNotes(e.target.files[0]); 
+	});
 	
 	$scope.loadNotes();
 });
 
-Nopad.service('noteService', function() {
-	return {
-		newNote: function (title, body, date, id, active) {
-			var note = {};
-			note.title = title;
-			note.body = body;
-			note.date = date;
-			note.active = active;
-			if (id) {
-				note.id = id;
-			}
-			else {
-				note.id = UUID.generate();
-				note.new = true;
-			}
-			
-			note.save = function (callback) {
-				chrome.storage.sync.get('index', function (syncIndex) {
-					syncIndex = syncIndex.index;
-					if (!syncIndex) {syncIndex = {};}
-					if (note.newTitle) {
-						note.title = note.newTitle;
-						note.newTitle = '';
-					}
-					note.date = Date.now();
-					note.new = false;
-					note.changed = false;
-					
-					
-					// Inactivate others
-					//for (i in syncIndex) {syncIndex[i].active = false;}
-					syncIndex[note.id] = {"id":note.id,"title":note.title,"date":note.date,"active":note.active};
-					
-					chrome.storage.local.set({'index': syncIndex})
-					chrome.storage.sync.set({'index': syncIndex})
-					
-					
-					// Save note
-					var toStore = {};
-					toStore[note.id] = note.body;
-					chrome.storage.local.set(toStore)
-					chrome.storage.sync.set(toStore, function() {
-						if (callback) {
-							callback();
-						}
-					})
-
-					
-				});
-			}
-			return note;
-		}
-	}
-});
 var background = chrome.extension.getBackgroundPage()
 
-
-
-console.log(background.saveOnClose)
