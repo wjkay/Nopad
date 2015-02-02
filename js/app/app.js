@@ -1,3 +1,5 @@
+var background = chrome.extension.getBackgroundPage();
+
 var Nopad = angular.module('Nopad', ['monospaced.elastic']);
 
 

@@ -15,32 +15,24 @@ Nopad.service('noteService', function() {
 			}
 			
 			note.save = function (callback) {
-				chrome.storage.sync.get('index', function (syncIndex) {
-					syncIndex = syncIndex.index;
-					if (!syncIndex) {syncIndex = {};}
+				chrome.storage.local.get('index', function (local) {
+					localIndex = local.index;
+					if (!localIndex) {localIndex = {};}
 					if (note.newTitle) {
 						note.title = note.newTitle;
 						note.newTitle = '';
 					}
 					note.date = Date.now();
 					note.new = false;
-					note.changed = false;
+					note.changed = true;
 					
-					syncIndex[note.id] = {"id":note.id,"title":note.title,"date":note.date,"active":note.active};
+					localIndex[note.id] = {"id":note.id,"title":note.title,"date":note.date,"active":note.active};
 					
-					chrome.storage.local.set({'index': syncIndex})
-					chrome.storage.sync.set({'index': syncIndex})
+					chrome.storage.local.set({'index': localIndex})
 					
 					var toStore = {};
 					toStore[note.id] = note.body;
 					chrome.storage.local.set(toStore)
-					chrome.storage.sync.set(toStore, function() {
-						if (callback) {
-							callback();
-						}
-					})
-
-					
 				});
 			}
 			return note;

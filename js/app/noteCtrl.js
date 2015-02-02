@@ -6,18 +6,13 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 		
 	// Functions
 	$scope.changed = function (note) {
-		note.changed = true;
-		$timeout.cancel($scope.autoSave[note.id]);	
-		
-		$scope.autoSave[note.id] = $timeout(function() {
-			$scope.autoSave[note.id] = null;
-			note.editingTitle = false;
+		$scope.activeNote.save();
+		$timeout.cancel($scope.autoSave);	
+		$scope.autoSave = $timeout(function() {
 			if (note.newTitle) {
 				$scope.saveTitle(note);
 			}
-			else {
-				note.save();
-			}
+			background.saveLocalToSync();
 		}, 2000);
 	}
 	
@@ -40,7 +35,6 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 		if (note.newTitle) {
 			note.title = note.newTitle;
 		}
-			
 		note.save();
 	}
 	
@@ -53,12 +47,9 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 		if ($scope.activeNote) {
 			$scope.activeNote.editingTitle = false;
 			// Save existing note first
-			if ($scope.activeNote.changed) {
-				$scope.activeNote.save();
-			}
 		}
 		// Update active index
-		chrome.storage.sync.get('index', function (syncIndex) {
+		chrome.storage.local.get('index', function (syncIndex) {
 			syncIndex = syncIndex.index
 			
 			for (i in syncIndex) {
@@ -68,13 +59,12 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 				}
 			}
 			chrome.storage.local.set({'index': syncIndex})
-			chrome.storage.sync.set({'index': syncIndex})
 			$scope.loadNote(note);
 		});
 	}
 	
 	$scope.loadNote = function(note) {
-		chrome.storage.sync.get(note.id, function(body){
+		chrome.storage.local.get(note.id, function(body){
 			note.body = body[note.id];
 			$scope.activeNote = note;
 			note.active = true
@@ -89,7 +79,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 			}, true);
 			
 			// Update active index
-			chrome.storage.sync.get('index', function (syncIndex) {
+			chrome.storage.local.get('index', function (syncIndex) {
 				syncIndex = syncIndex.index
 				
 				for (i in syncIndex) {
@@ -99,7 +89,6 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 					}
 				}
 				chrome.storage.local.set({'index': syncIndex})
-				chrome.storage.sync.set({'index': syncIndex})
 				$scope.$apply();
 			});
 		});
@@ -181,5 +170,4 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 	$scope.loadNotes();
 });
 
-var background = chrome.extension.getBackgroundPage()
 
