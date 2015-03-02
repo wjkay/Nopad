@@ -20,7 +20,7 @@ small {font-size:9px; bottom-border:1px solid #3F85F4;}
 
 .note {float:left;width:581px;margin:0 0 0 -1px;}/* 761-581 */
 .note > textarea {width:100%;min-height:255px;max-height:575px;resize:vertical;border:1px solid #3F85F4;border-top:0;margin-bottom:-4px;}
-.note > span {height:10px;position:fixed;bottom:0;left:2px;font-weight:700;color:#3F85F4;margin:5px 0px;}
+.note > span {height:10px;position:fixed;bottom:0;right:201px;font-weight:700;color:#3F85F4;margin:5px 0px;}
 .note > span:hover {background:white;}
  
 .note-list {float:right;width:181px;min-height:255px;height:100%;overflow:hidden;}
