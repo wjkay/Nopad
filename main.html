@@ -50,7 +50,7 @@
 			</h1>
         </header>
 		<div class="note" ng-show="activeNote">
-			<textarea ng-model="activeNote.body" ng-keyup="changed(activeNote);" maxlength=8000></textarea>
+			<textarea ng-model="activeNote.body" ng-keyup="changed(activeNote);" maxlength=8000 focus-on="body"></textarea>
 			<span ng-show="activeNote.body.length > 4000">{{activeNote.body.length}} / 8000</span>
 		</div>
 		<div class="note-list">
@@ -72,7 +72,8 @@
 											<td ng-click="changeNote(note)" >
 												<span ng-hide="note.active && note.editingTitle">{{note.title}} <i ng-show="note.active && !note.editingTitle" style="float:right;" class="fa fa-pencil" ng-click="editTitle(note);" stop-event></i></span>
 												<span ng-show="note.active && note.editingTitle" >
-													<input ng-model="note.newTitle" ng-keyup="changeTitle(note, $event);" stop-event></textarea>
+													<input ng-model="note.newTitle" ng-keyup="changeTitle(note, $event);"
+													focus-on="{{note.id}}"  stop-event></textarea>
 													<i style="float:right;" class="fa fa-close fa-l" ng-click="cancelTitle(note)" stop-event></i>
 													<i style="float:right;" class="fa fa-check fa-l" ng-click="saveTitle(note);" stop-event></i>
 												</span>

@@ -1,4 +1,4 @@
-Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService) {
+Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,focus) {
 	var background = chrome.extension.getBackgroundPage();
 	$scope.notes = [];
 	$scope.noteService = noteService;
@@ -21,11 +21,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 		if (event) {
 			if (event.which == '13') {
 				$scope.autoSave[note.id] = null;
-				note.editingTitle = false;
-				if (note.newTitle) {
-					note.title = note.newTitle;
-				}
-				note.save();
+				$scope.saveTitle(note);
 			}
 		}
 	}
@@ -35,6 +31,8 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 		if (note.newTitle) {
 			note.title = note.newTitle;
 		}
+		console.log('Focus body')
+		focus('body')
 		note.save();
 	}
 	
@@ -92,7 +90,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 				$scope.$apply();
 			});
 		});
-	}
+	};
 	
 	$scope.loadNotes = loadNotes = function() {
 		$scope.notes = [];
@@ -147,13 +145,18 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService)
 	}
 	
 	$scope.newNote = function () { 
-		$scope.activeNote = noteService.newNote('New Note', '', '', '', true);
-		$scope.activeNote.save($scope.loadNotes);
+		var note = noteService.newNote('New Note', '', '', '', true);
+		$scope.changeNote(note);
+		$scope.notes.push(note);
+		$scope.activeNote = note;
+		$scope.changed($scope.activeNote);
+		$scope.editTitle($scope.activeNote);
 	}
 	
 	$scope.editTitle = function (note) {
 		note.newTitle = note.title;
 		note.editingTitle = true;
+		focus(note.id);
 	}
 	
 	$scope.exportNotes = function () {
