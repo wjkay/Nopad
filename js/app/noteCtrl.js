@@ -32,7 +32,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			note.title = note.newTitle;
 		}
 		console.log('Focus body')
-		focus('body')
+		focus('body');
 		note.save();
 	}
 	
@@ -58,6 +58,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			}
 			chrome.storage.local.set({'index': syncIndex})
 			$scope.loadNote(note);
+			focus('body');
 		});
 	}
 	
