@@ -16,6 +16,8 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			background.saveLocalToSync();
 			$scope.$apply();
 		}, 2000);
+
+		// TODO: add 1 sec interval for first 60s, then minute after to update filters.
 	}
 	
 	// Enter to save note title
@@ -117,7 +119,8 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			chrome.storage.local.set({'index': syncIndex}, function() {
 				chrome.storage.sync.set({'index': syncIndex}, function() {
 					chrome.storage.local.remove(note.id, function() {			
-						chrome.storage.sync.remove(note.id, function() {			
+						chrome.storage.sync.remove(note.id, function() {	
+							$scope.$apply();		
 						});
 					});
 				});

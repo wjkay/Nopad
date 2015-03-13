@@ -43,7 +43,7 @@ Nopad.service('noteService', function() {
 		},
 		exportNotes: function() {
 			chrome.storage.local.get('index', function (index) {
-				var csv = "title,date,body,id\n";
+				var csv = "id,date,title,body\r\n";
 				var toExport = [];
 				var length = 0;
 				index = index.index;
@@ -52,22 +52,25 @@ Nopad.service('noteService', function() {
 					length += 1;
 				}
 				for(id in index) {
-					chrome.storage.local.get(id, function(body){
-						toExport.push(body);
-						csv += (index[id].title + ',' + index[id].date + ',' + body[id] + ',' + id + '\n')
-						
-						if (toExport.length == length) {
-							var a = document.createElement("a");
-							document.body.appendChild(a);
-							a.style = "display: none";
-							var blob = new Blob([csv], {type: "text/csv"}),
-								url = window.URL.createObjectURL(blob);
-							a.href = url;
-							a.download =  'Nopad Notes - Exported - '+new Date()+'.csv';
-							a.click();
-							window.URL.revokeObjectURL(url);							
-						}
-					})
+					(function(id) {
+						chrome.storage.sync.get(id, function(body){
+							toExport.push(body);
+							csv += (id + ',' + new Date(index[id].date).toISOString() + ',' +
+								index[id].title + ',' + body[id] + '\r\n')
+							
+							if (toExport.length == length) {
+								var a = document.createElement("a");
+								document.body.appendChild(a);
+								a.style = "display: none";
+								var blob = new Blob([csv], {type: "text/csv"}),
+									url = window.URL.createObjectURL(blob);
+								a.href = url;
+								a.download =  'Nopad Notes - Exported - '+new Date()+'.csv';
+								a.click();
+								window.URL.revokeObjectURL(url);							
+							}
+						})
+					})(id);
 				}
 			})
 		},
@@ -80,14 +83,14 @@ Nopad.service('noteService', function() {
 				  	console.log('raw', rawNotes);
 
 				  	if (rawNotes.length > 0) {
-						if (rawNotes[0] === 'title,date,body,id') {
+						if (rawNotes[0] === 'id,date,title,body,') {
 							rawNotes.splice(0,1);
 						}
 						// TODO: Make background saving function to prevent max operations and increase efficiency 
 						if (rawNotes.length < 20) { 
 							angular.forEach(rawNotes, function (rawNote) {
 								var parts = rawNote.split(',');
-								var note = this.newNote(parts[0], parts[2], new Date(parts[1]), parts[3]);
+								var note = this.newNote(parts[3], parts[4], new Date(parts[1]), parts[0]);
 							});
 						}
 				  	}
