@@ -1,6 +1,9 @@
 Nopad.filter('timeSinceFilter', function() {
 	return function(date) {
-		if (date) {
+		if (!date) {
+			return "Date not recorded"
+		}
+		if (typeof date.getMonth === 'function') {
 			var difference = parseInt((Date.now()-date)/1000);
 
 			if (difference <= 1) {
@@ -36,20 +39,16 @@ Nopad.filter('timeSinceFilter', function() {
 			if (difference <= (60 * 60 * 24 * 7 * 4 * 2)) {
 				return 'Saved a month ago';
 			}
-			if (difference < (60 * 60 * 24 * 7 * 52)) {
-				var d1Y = d1.getFullYear();
-				var d2Y = d2.getFullYear();
-				var d1M = d1.getMonth();
-				var d2M = d2.getMonth();
-	 
-				return 'Saved ' + (d2M+12*d2Y)-(d1M+12*d1Y) + ' months ago' ;
+			if (difference <= (60 * 60 * 24 * 7 * 52)) {
+				return 'Saved ' + parseInt(difference/(60 * 60 * 24 * 7 * 4)) +  ' months ago' ;
 			}
-			if (d2.getFullYear()-d1.getFullYear() == 1) {
+			if (Date.now().getFullYear() - date.getFullYear() == 1) {
 				return 'Saved a year ago';
 			}
 			else {
-				return 'Saved ' + d2.getFullYear()-d1.getFullYear() + ' years ago';
+				return 'Saved ' + Date.now().getFullYear()-date.getFullYear() + ' years ago';
 			}
 		}
+		return "No idea when this was saved"
 	}
 });

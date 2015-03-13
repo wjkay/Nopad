@@ -22,11 +22,15 @@ Nopad.service('noteService', function() {
 						note.title = note.newTitle;
 						note.newTitle = '';
 					}
-					note.date = Date.now();
 					note.new = false;
-					note.changed = true;
 					
-					localIndex[note.id] = {"id":note.id,"title":note.title,"date":note.date,"active":note.active};
+					localIndex[note.id] = {
+						"id":note.id,
+						"title":note.title,
+						"date":note.date,
+						"active":note.active,
+						"changed":true
+					};
 					
 					chrome.storage.local.set({'index': localIndex})
 					

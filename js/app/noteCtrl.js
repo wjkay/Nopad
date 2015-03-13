@@ -12,7 +12,9 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			if (note.newTitle) {
 				$scope.saveTitle(note);
 			}
+			$scope.activeNote.date = new Date();
 			background.saveLocalToSync();
+			$scope.$apply();
 		}, 2000);
 	}
 	
@@ -50,48 +52,28 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 		chrome.storage.local.get('index', function (syncIndex) {
 			syncIndex = syncIndex.index
 			
-			for (i in syncIndex) {
-				syncIndex[i].active = false;
-				if (note.id == i) {
-					syncIndex[i].active = true;
-				}
+			for (var id in syncIndex) {
+				syncIndex[id].active = (id == note.id);
 			}
+			// Save new active
 			chrome.storage.local.set({'index': syncIndex})
-			$scope.loadNote(note);
-			focus('body');
-		});
-	}
-	
-	$scope.loadNote = function(note) {
-		chrome.storage.local.get(note.id, function(body){
-			note.body = body[note.id];
-			$scope.activeNote = note;
-			note.active = true
+			// Get body
+			chrome.storage.sync.get(note.id, function(body){
+				note.body = body[note.id];
+				console.log('loading: ',note)
+				focus('body');
 
-			angular.forEach($scope.notes, function (n) {
-				n.active = (n.id == note.id);
-			})
-			// Add listener to save on close
-			addEventListener("unload", function (event) {
-				background.saveOnClose(note);
-				$scope.activeNote.save();
-			}, true);
-			
-			// Update active index
-			chrome.storage.local.get('index', function (syncIndex) {
-				syncIndex = syncIndex.index
-				
-				for (i in syncIndex) {
-					syncIndex[i].active = false;
-					if (note.id == i) {
-						syncIndex[i].active = true;
-					}
-				}
-				chrome.storage.local.set({'index': syncIndex})
+				// Add listener to save on close
+				addEventListener("unload", function (event) {
+					background.saveOnClose(note);
+					$scope.activeNote.save();
+				}, true);
+
+				$scope.activeNote = note;
 				$scope.$apply();
 			});
 		});
-	};
+	}
 	
 	$scope.loadNotes = loadNotes = function() {
 		$scope.notes = [];
@@ -99,18 +81,18 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			syncIndex = syncIndex.index
 			var foundActive = false;
 			for (i in syncIndex) {
-				
-				var note = noteService.newNote(syncIndex[i].title, null, syncIndex[i].date, i, syncIndex[i].active)
+				console.log('Loading: ', syncIndex[i])
+				var note = noteService.newNote(syncIndex[i].title, null, new Date(syncIndex[i].date), i, syncIndex[i].active)
 				$scope.notes.push(note);
 				
 				if (note.active) {
-					$scope.loadNote(note);
+					$scope.changeNote(note);
 					foundActive = true;
 				}
 			}
 			if (!foundActive) {
 				if ($scope.notes.length > 0) {
-					$scope.loadNote($scope.notes[0]);
+					$scope.changeNote($scope.notes[0]);
 				}
 				else {
 					$scope.newNote();
@@ -136,8 +118,6 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 				chrome.storage.sync.set({'index': syncIndex}, function() {
 					chrome.storage.local.remove(note.id, function() {			
 						chrome.storage.sync.remove(note.id, function() {			
-							$scope.loadNotes();
-							$scope.$apply();
 						});
 					});
 				});
