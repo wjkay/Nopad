@@ -3,7 +3,16 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 	$scope.notes = [];
 	$scope.noteService = noteService;
 	$scope.autoSave = {};
-		
+	
+	// Minute timer
+	function resetFilterTimers() {
+		// Second timer to update fitlers
+		$interval.cancel($scope.updateSeconds);
+		$interval.cancel($scope.updateMinutes);
+		$scope.updateSeconds = $interval(function() {$scope.$apply(); }, 1000, 60);
+		$scope.updateMinutes = $interval(function() {$scope.$apply(); }, 60000, 60);
+	}
+
 	// Functions
 	$scope.changed = function (note) {
 		$scope.activeNote.save();
@@ -12,20 +21,18 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			if (note.newTitle) {
 				$scope.saveTitle(note);
 			}
-			$scope.activeNote.date = new Date();
 			background.saveLocalToSync();
 			$scope.$apply();
 		}, 2000);
-
-		// TODO: add 1 sec interval for first 60s, then minute after to update filters.
+		resetFilterTimers();
 	}
 	
 	// Enter to save note title
 	$scope.changeTitle = function (note, event) {
 		if (event) {
 			if (event.which == '13') {
-				$scope.autoSave[note.id] = null;
 				$scope.saveTitle(note);
+				resetFilterTimers();
 			}
 		}
 	}
@@ -35,9 +42,10 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 		if (note.newTitle) {
 			note.title = note.newTitle;
 		}
-		console.log('Focus body')
 		focus('body');
 		note.save();
+		background.saveLocalToSync();
+
 	}
 	
 	$scope.cancelTitle = function (note) {
@@ -120,7 +128,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 				chrome.storage.sync.set({'index': syncIndex}, function() {
 					chrome.storage.local.remove(note.id, function() {			
 						chrome.storage.sync.remove(note.id, function() {	
-							$scope.$apply();		
+							$scope.loadNotes();		
 						});
 					});
 				});
@@ -130,10 +138,9 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 	
 	$scope.newNote = function () { 
 		var note = noteService.newNote('New Note', '', '', '', true);
-		$scope.changeNote(note);
 		$scope.notes.push(note);
 		$scope.activeNote = note;
-		$scope.changed($scope.activeNote);
+		$scope.activeNote.save();
 		$scope.editTitle($scope.activeNote);
 	}
 	

@@ -68,9 +68,9 @@
 												<i class="fa" ng-class="{'fa-sort-alpha-desc':reverse,'fa-sort-alpha-asc':!reverse,'active':predicate=='title'}" ng-click="predicate = 'title'; reverse = !reverse"></i>
 											</td>
 										</tr>
-										<tr ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes | orderBy:'active'  | filter:searchText)| orderBy:predicate:reverse;" ng-class="{'active':note.active}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
+										<tr ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes | orderBy:'active'  | filter:searchText)| orderBy:predicate:reverse;" ng-class="{'active':note.id == activeNote.id}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
 											<td ng-click="changeNote(note)" >
-												<span ng-hide="note.active && note.editingTitle">{{note.title}} <i ng-show="note.active && !note.editingTitle" style="float:right;" class="fa fa-pencil" ng-click="editTitle(note);" stop-event></i></span>
+												<span ng-hide="note.active && note.editingTitle">{{note.title}} <i ng-show="note.id == activeNote.id && !note.editingTitle" style="float:right;" class="fa fa-pencil" ng-click="editTitle(note);" stop-event></i></span>
 												<span ng-show="note.active && note.editingTitle" >
 													<input ng-model="note.newTitle" ng-keyup="changeTitle(note, $event);"
 													focus-on="{{note.id}}"  stop-event></textarea>

@@ -23,6 +23,7 @@ Nopad.service('noteService', function() {
 						note.newTitle = '';
 					}
 					note.new = false;
+					note.date = new Date();
 					
 					localIndex[note.id] = {
 						"id":note.id,
@@ -79,7 +80,7 @@ Nopad.service('noteService', function() {
 				var reader = new FileReader();
 
 				reader.onload = function(e) {
-				  	var rawNotes = reader.result.split('\n');
+				  	var rawNotes = reader.result.split('\r\n');
 				  	console.log('raw', rawNotes);
 
 				  	if (rawNotes.length > 0) {
@@ -90,7 +91,8 @@ Nopad.service('noteService', function() {
 						if (rawNotes.length < 20) { 
 							angular.forEach(rawNotes, function (rawNote) {
 								var parts = rawNote.split(',');
-								var note = this.newNote(parts[3], parts[4], new Date(parts[1]), parts[0]);
+								var note = this.newNote(parts[2], parts[3], new Date(parts[1]), parts[0]);
+								note.save() // <- Save to sync issue background.saveLocalToSync();
 							});
 						}
 				  	}
