@@ -27,24 +27,24 @@ small {font-size:9px; bottom-border:1px solid #3F85F4;}
 .note-list > table {width:100%;min-height:255px;height:100%;}
 .note-list > table > tbody > tr > td {padding:0;}
 
-.search {font-family:'FontAwesome';position:absolute;top:6px;content:"\f007";}    
+.search {font-family:'FontAwesome';position:relative;display: inline-block;margin:0;content:"\f007";}    
 .search:before {position:absolute;color:#3F85F4;font-family:FontAwesome;top:3px;left:3px;content: "\f002";}
 .search > input {height:14px;width:134px;padding-left:15px;margin-left:-1px;}
 
 .active{color:#3F85F4;}
-.active > td{border-bottom:1px solid #3F85F4;border-top:1px solid #3F85F4;}
+div.active{border-bottom:1px solid #3F85F4;border-top:1px solid #3F85F4;}
 
-.scroll-container {height:100%;width:100%;overflow:hidden;overflow-y:auto;padding:0;margin: -1px 0 0 0;}
-.scroll-container > table {width:100%;border-spacing:0;border-collapse:collapse;}
-.scroll-container > table > tbody > tr:not(:first-child):hover {background-color: #3F85F4;color: white;}
-.scroll-container > table > tbody > tr:not(:first-child) > td {margin:0;padding:4px 0px 3px 4px;cursor:pointer;border-color-top:rgba(0,0,0,0.2);border-top-style:solid;border-top-width:1px;}
-.scroll-container > table > tbody > tr:first-child > td {padding: 2px 0px 3px 0px;border-bottom:#3F85F4 1px solid;}
-.scroll-container > table > tbody > tr:last-child > td {border-bottom:black 1px solid;}
-.scroll-container > table > tbody > tr:first-child > td > i {float:right;}
-.scroll-container > table > tbody > tr > td:last-child {padding-right:3px;}
-.scroll-container > table > tbody > tr > td > i {margin: 1px 0 -1px 3px;}
-.scroll-container > table > tbody > tr > td > span > input {font-size:12px;height:12px;margin:-1px;}
+.scroll-container {   
+	position: absolute;
+    height: 100%;
+    width: 180px;
+    overflow: auto;
+}
+.scroll-container::-webkit-scrollbar {
+  width: 5px;
+}
 
-/* ----------- Scroll bar styles ----------- */
-.scroll-container::-webkit-scrollbar-track{-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);border-radius:10px;}
-.scroll-container::-webkit-scrollbar-thumb {border-radius:s10px;-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.5);}
+.scroll-container::-webkit-scrollbar-thumb {
+	border-radius:s10px;
+	-webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.5);
+}
