@@ -3,14 +3,16 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 	$scope.notes = [];
 	$scope.noteService = noteService;
 	$scope.autoSave = {};
+
+	resetFilterTimers();
 	
 	// Minute timer
 	function resetFilterTimers() {
 		// Second timer to update fitlers
 		$interval.cancel($scope.updateSeconds);
 		$interval.cancel($scope.updateMinutes);
-		$scope.updateSeconds = $interval(function() {$scope.$apply(); }, 1000, 60);
-		$scope.updateMinutes = $interval(function() {$scope.$apply(); }, 60000, 60);
+		$scope.updateSeconds = $interval(function() {$scope.$digest(); }, 1000, 60);
+		$scope.updateMinutes = $interval(function() {$scope.$digest(); }, 60000, 60);
 	}
 
 	// Functions
@@ -27,37 +29,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 		resetFilterTimers();
 	}
 	
-	// Enter to save note title
-	$scope.changeTitle = function (note, event) {
-		if (event) {
-			if (event.which == '13') {
-				$scope.saveTitle(note);
-				resetFilterTimers();
-			}
-		}
-	}
-	
-	$scope.saveTitle = function (note) {
-		note.editingTitle = false;
-		if (note.newTitle) {
-			note.title = note.newTitle;
-		}
-		focus('body');
-		note.save();
-		background.saveLocalToSync();
-
-	}
-	
-	$scope.cancelTitle = function (note) {
-		note.newTitle = null;
-		note.editingTitle = false;
-	}
-	
-	$scope.changeNote = function (note) {
-		if ($scope.activeNote) {
-			$scope.activeNote.editingTitle = false;
-			// Save existing note first
-		}
+	$scope.changeNote = function (note, dontFocus) {
 		// Update active index
 		chrome.storage.local.get('index', function (syncIndex) {
 			syncIndex = syncIndex.index
@@ -70,16 +42,18 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			// Get body
 			chrome.storage.sync.get(note.id, function(body){
 				note.body = body[note.id];
-				console.log('loading: ',note)
-				focus('body');
+				if (!dontFocus)
+					focus('body');
 
 				// Add listener to save on close
 				addEventListener("unload", function (event) {
 					background.saveOnClose(note);
 					$scope.activeNote.save();
 				}, true);
-
+				if($scope.activeNote)
+					$scope.activeNote.active = false;
 				$scope.activeNote = note;
+				$scope.activeNote.active = true;
 				$scope.$apply();
 			});
 		});
@@ -141,15 +115,23 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 		$scope.notes.push(note);
 		$scope.activeNote = note;
 		$scope.activeNote.save();
-		$scope.editTitle($scope.activeNote);
-	}
-	
-	$scope.editTitle = function (note) {
-		note.newTitle = note.title;
-		note.editingTitle = true;
+		// Focus to title
 		focus(note.id);
 	}
 	
+	$scope.reorder = function(prop) {
+		if ($scope.predicate == prop) {
+			$scope.reverse = !$scope.reverse;
+		}
+
+		$scope.predicate = prop;
+		var direction = '';
+		if ($scope.reverse) 
+			direction = '-';
+		$scope.orderbyProp = direction + prop;
+
+	}
+
 	$scope.exportNotes = function () {
 		noteService.exportNotes();
 	}

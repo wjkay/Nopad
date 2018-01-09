@@ -6,11 +6,12 @@ Nopad.filter('timeSinceFilter', function() {
 		if (typeof date.getMonth === 'function') {
 			var difference = parseInt((Date.now()-date)/1000);
 
-			if (difference <= 1) {
-				return 'Saved less than a second ago';
+			if (difference <= 2) {
+				return 'Saved about a second ago';
 			}
 			if (difference <= 60) {
 				return 'Saved ' + parseInt(difference) + ' seconds ago';
+				//return 'Saved less than a minute ago';
 			}
 			if (difference <= 60 * 2) {
 				return 'Saved a minute ago';
