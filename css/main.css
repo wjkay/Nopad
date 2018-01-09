@@ -26,8 +26,8 @@ small {
 
 .fa-l {font-size:14px;cursor:pointer;}
 
-.note {float: left;}/* 761-581 */
-.note > textarea {min-height:255px;max-height: 570px;min-width: 610px;max-width: 610px;border:1px solid #3F85F4;border-top:0;margin-bottom:  -3px;}
+.note {float: left;/* margin-bottom: -21px; */}/* 761-581 */
+.note > textarea {min-height: 255px;max-height: 570px;min-width: 610px;max-width: 610px;border:1px solid #3F85F4;border-top:0;margin-bottom:  -3px;overflow: auto;resize: vertical;}
 .note > span {height: 12px;position:fixed;bottom:0;right:201px;font-weight:700;color:#3F85F4;margin:5px 0px;}
 .note > span:hover {background:white;}
   
@@ -84,8 +84,9 @@ small {
 	position: absolute;
 	height: 100%;
 	width: 181px;
-	overflow: auto;
+	overflow: scroll;
 	padding-right: 6px;
+	/* padding-bottom: 10px; */
 }
 textarea::-webkit-scrollbar-thumb,
 .scroll-container::-webkit-scrollbar {
