@@ -1,10 +1,11 @@
 Nopad.filter('timeSinceFilter', function() {
 	return function(date) {
-		if (!date) {
-			return "Date not recorded"
+		if (!date || isNaN( date.getTime())) {
+			return "Not sure when last saved"
 		}
 		if (typeof date.getMonth === 'function') {
-			var difference = parseInt((Date.now()-date)/1000);
+			var today = Date.now();
+			var difference = parseInt((today-date)/1000);
 
 			if (difference <= 2) {
 				return 'Saved about a second ago';
@@ -43,11 +44,12 @@ Nopad.filter('timeSinceFilter', function() {
 			if (difference <= (60 * 60 * 24 * 7 * 52)) {
 				return 'Saved ' + parseInt(difference/(60 * 60 * 24 * 7 * 4)) +  ' months ago' ;
 			}
-			if (Date.now().getFullYear() - date.getFullYear() == 1) {
+			today = new Date(today);
+			if (today.getFullYear() - date.getFullYear() == 1) {
 				return 'Saved a year ago';
 			}
 			else {
-				return 'Saved ' + Date.now().getFullYear()-date.getFullYear() + ' years ago';
+				return 'Saved ' + today.getFullYear()-date.getFullYear() + ' years ago';
 			}
 		}
 		return "No idea when this was saved"

@@ -1,13 +1,13 @@
-html {margin: 0px 0 0px 2px;}
+html {margin: 0px 0 0px 2px;height: 270px;}
 /*----------- Header styles -----------*/
 header {background-color:#3F85F4;padding: 3px 3px 0px 3px;height: 15px;margin:0;}
 header h1 {font-size:12px;color:white;font-weight:bold;margin:-1px;}
 header > h1 > i {font-size:12px;}
 header > h1 > div {float:right;text-align:left;}
-header > h1 > div > button {margin-right:3px;float:right;color:white;}
+header > h1 > div > button {margin-right: 5px;float:right;color:white;top: 1px;position: relative;}
 
 /*----------- Body styles -----------*/
-body {padding:0;margin:  0;font-family:Arial,sans-serif;overflow:hidden;width: 798px;}
+body {padding:0;margin:  0;font-family:Arial,sans-serif;overflow:hidden;width: 798px;height: 270px;}
 
 button {font-size:13px;cursor:pointer;border:0;background:0;padding:0px 3px 1px 3px;}
 button:focus {border:0;}
@@ -19,21 +19,44 @@ button:focus {
     outline: none;
 }
 label {font-size:10px;}
-small {
+.small {
 	font-size:8px;
+	padding-top: 4px;
 	color: rgba(0, 0, 0, 0.50);
 }
 
 .fa-l {font-size:14px;cursor:pointer;}
 
-.note {float: left;/* margin-bottom: -21px; */}/* 761-581 */
-.note > textarea {min-height: 255px;max-height: 570px;min-width: 610px;max-width: 610px;border:1px solid #3F85F4;border-top:0;margin-bottom:  -3px;overflow: auto;resize: vertical;}
-.note > span {height: 12px;position:fixed;bottom:0;right:201px;font-weight:700;color:#3F85F4;margin:5px 0px;}
-.note > span:hover {background:white;}
+.note {
+	float: left;
+}
+.note > textarea {
+	min-height: 255px;
+	max-height: 570px;
+	min-width: 610px;
+	max-width: 610px;
+	border:1px solid #3F85F4;
+	border-top:0;
+	margin-bottom:  -3px;
+	overflow: auto;resize: vertical;
+}
+.note > span {
+	height: 12px;
+	position:fixed;bottom:0;
+	right:201px;
+	font-weight:700;
+	color:#3F85F4;
+	margin:5px 0px;
+}
+.note > span:hover {
+	background:white;
+}
   
 .note-list {
-	float:right;
+	display: inline-block;
 	width: 188px;
+	border: 1px solid #3F85F4;
+	margin: -1px;
 }
 .note-list > .scroll-container > .note-list-note:last-child {
 	margin-bottom: 35px;
@@ -42,34 +65,74 @@ small {
 .note-list-note {
 	padding: 4px;
 	width: 100%;
+	padding: 6px 1px 6px 4px;
 }
 .note-list-note.active{
-	border-top:1px solid #3F85F4;
+	border-top: 1px solid #3F85F4;
 	border-bottom:1px solid #3F85F4;
-	padding: 3px 4px;
+	margin: -1px 0;
 }
 .note-list-note input {
 	border: 0;
 	width: 100%;
 }
 .note-list-note i {
-	padding-left:2px;
 	position: relative;
+	right: 7px;
 	top: -3px;
 	float:right;
 }
 
+.note-list-note .delete-confirm {
+	float:right;
+	padding-right: 8px;
+	background-color:white;
+}
+.note-list-note .delete-confirm span {
+font-weight:bold;
+font-size:9px;
+cursor:pointer;
+}
 
 
-.search {font-family:'FontAwesome';position:relative;display: inline-block;margin:0;content:"\f007";}    
-.search:before {position:absolute;color:#3F85F4;font-family:FontAwesome;top:3px;left:3px;content: "\f002";}
-.search > input {height: 21px;width: 131px;padding-left: 18px;margin: -1px;/* padding: 2px 0; */}
+.search {
+	font-family:'FontAwesome';
+	position:relative;
+	display: inline-block;
+	margin:0;
+	content:"\f007";
+}    
+.search:before {
+	position:absolute;
+	color:#3F85F4;
+	font-family:FontAwesome;
+	top:3px;left:3px;
+	content: "\f002";
+}
+.search > input {
+	height: 21px;
+	width: 156px;
+	padding-left: 18px;
+	margin: -1px;
+}
+.search > i {
+	float:right;
+	padding: 3px;
+	position: absolute;
+	right: 0px;
+	line-height: 15px;
+	color: #3F85F4;
+}
 
 .active{
 	color:#3F85F4;
 }
-.active small {
+.active .small {
 	color:#3f85f4d1;
+}
+
+.primary {
+	color:#3F85F4;
 }
 
 .danger {
@@ -83,16 +146,16 @@ small {
 .scroll-container {
 	position: absolute;
 	height: 100%;
-	width: 181px;
-	overflow: scroll;
-	padding-right: 6px;
-	/* padding-bottom: 10px; */
+	width: 188px;
+	overflow: auto;
 }
 textarea::-webkit-scrollbar-thumb,
 .scroll-container::-webkit-scrollbar {
   width: 3px;
+   border: 4px solid rgba(0, 0, 0, 0);
 }
 textarea::-webkit-scrollbar-thumb,
 .scroll-container::-webkit-scrollbar-thumb {
   background-color: #3f85f473
+
 }

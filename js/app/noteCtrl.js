@@ -4,25 +4,36 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 	$scope.noteService = noteService;
 	$scope.autoSave = {};
 
+	// Minute timer for updating ui
 	resetFilterTimers();
-	
-	// Minute timer
 	function resetFilterTimers() {
 		// Second timer to update fitlers
 		$interval.cancel($scope.updateSeconds);
 		$interval.cancel($scope.updateMinutes);
-		$scope.updateSeconds = $interval(function() {$scope.$digest(); }, 1000, 60);
-		$scope.updateMinutes = $interval(function() {$scope.$digest(); }, 60000, 60);
+		$scope.updateSeconds = $interval(function() { }, 1000, 60);
+		$scope.updateMinutes = $interval(function() { }, 60000, 60);
 	}
 
-	// Functions
+	// Order the notes
+	$scope.predicate = 'date';
+	$scope.reorder = function(prop) {
+		if ($scope.predicate && $scope.predicate == prop) {
+			$scope.reverse = !$scope.reverse;
+		}
+		$scope.predicate = prop;
+		var direction = '';
+		if ($scope.reverse) {
+			direction = '-';
+		}
+		$scope.orderbyProp = direction + prop;
+	}
+	$scope.reorder('date');
+
+
 	$scope.changed = function (note) {
 		$scope.activeNote.save();
 		$timeout.cancel($scope.autoSave);	
 		$scope.autoSave = $timeout(function() {
-			if (note.newTitle) {
-				$scope.saveTitle(note);
-			}
 			background.saveLocalToSync();
 			$scope.$apply();
 		}, 2000);
@@ -37,14 +48,13 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			for (var id in syncIndex) {
 				syncIndex[id].active = (id == note.id);
 			}
-			// Save new active
-			chrome.storage.local.set({'index': syncIndex})
+			
 			// Get body
 			chrome.storage.sync.get(note.id, function(body){
 				note.body = body[note.id];
-				if (!dontFocus)
+				if (!dontFocus){
 					focus('body');
-
+				}
 				// Add listener to save on close
 				addEventListener("unload", function (event) {
 					background.saveOnClose(note);
@@ -118,29 +128,19 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 		// Focus to title
 		focus(note.id);
 	}
-	
-	$scope.reorder = function(prop) {
-		if ($scope.predicate == prop) {
-			$scope.reverse = !$scope.reverse;
-		}
-
-		$scope.predicate = prop;
-		var direction = '';
-		if ($scope.reverse) 
-			direction = '-';
-		$scope.orderbyProp = direction + prop;
-
-	}
 
 	$scope.exportNotes = function () {
 		noteService.exportNotes();
 	}
 
 	$scope.importNotes = function () {
-		document.getElementById('importInput').click();
+		var el = document.getElementById('importInput');
+		el.type = '';
+		el.type = 'file';
+		el.click();
 	}
 	document.getElementById('importInput').addEventListener('change', function (e) {
-		noteService.importNotes(e.target.files[0]); 
+		noteService.importNotes(e.target.files[0], $scope.loadNotes); 
 	});
 	
 	$scope.loadNotes();

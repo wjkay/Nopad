@@ -21,6 +21,7 @@
 		
 		<script src="js/lib/UUID.js"></script>
 		<script src="js/lib/elastic.js"></script>
+		<script src="js/lib/papaparse.min.js"></script>
 		
         <script src="js/app/app.js"></script>
 		<script src="js/app/filter.js"></script>
@@ -54,16 +55,23 @@
 		</div>
 		<div class="note-list">
 			<div>
-				<p class="search"><input ng-model="searchText" ng-init="predicate = 'date';reverse = true"></input></p>
+				<p class="search"><input ng-model="searchText"></input><i ng-show="searchText" ng-click="searchText = ''" class="fa fa-times"></i></p>
 				<i class="fa" ng-class="{'fa-sort-amount-asc':reverse,'fa-sort-amount-desc':!reverse,'active':predicate=='date'}" ng-click="reorder('date');"></i>
 				<i class="fa" ng-class="{'fa-sort-alpha-desc':reverse,'fa-sort-alpha-asc':!reverse,'active':predicate=='title'}" ng-click="reorder('title');"></i>
 			</div>
 			<div class="scroll-container">
-				<div class="note-list-note" ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes | filter:searchText | orderBy:['-active',orderbyProp])  " ng-class="{'active':note.id == activeNote.id}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
+				<div class="note-list-note" ng-init="predicate = 'title';reverse = false;" ng-repeat="note in (notes | filter:searchText | orderBy:[orderbyProp])" ng-class="{'active':note.id == activeNote.id}" ng-mouseover="hover = note;" ng-mouseleave="hover = null">
 					<span ng-click="changeNote(note)" >
-						<input ng-focus="changeNote(note, true)"  ng-model="note.title" focus-on="{{note.id}}" ng-blur="changed(note);" ng-class="{'active':note.id == activeNote.id}" stop-event />
-						<br/><small>{{note.date | timeSinceFilter}}</small>
-						<i ng-hide="note.id != activeNote.id && hover.id != note.id" class="fa fa-trash-o fa-l danger" ng-click="deleteNote(note)" stop-event></i>
+						<input ng-focus="changeNote(note, true)"  ng-model="note.title" focus-on="{{note.id}}" ng-keyup="changed(activeNote);" ng-class="{'active':note.id == activeNote.id}" stop-event />
+						<div class="small">
+							{{note.date | timeSinceFilter}}
+							<i ng-show="!note.deleting && (note.id == activeNote.id || hover.id == note.id)" class="fa fa-trash-o fa-l danger" ng-click="note.deleting = true;" stop-event></i>
+							<div ng-show="note.deleting" class="danger delete-confirm">
+								Delete? <span ng-click="note.deleting = false;">No</span> / <span ng-click="deleteNote(note)" stop-event>Yes</span>							
+							</div>
+							
+						</div>
+						
 						<!--i ng-hide="note.id != activeNote.id" class="fa fa-save fa-l success" ng-click="note.save();" stop-event></i-->
 					</span>
 				</div>

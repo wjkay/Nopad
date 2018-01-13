@@ -38,13 +38,15 @@ Nopad.service('noteService', function() {
 					var toStore = {};
 					toStore[note.id] = note.body;
 					chrome.storage.local.set(toStore)
+					if (callback) {
+						callback();
+					}
 				});
 			}
 			return note;
 		},
 		exportNotes: function() {
 			chrome.storage.local.get('index', function (index) {
-				var csv = "id,date,title,body\r\n";
 				var toExport = [];
 				var length = 0;
 				index = index.index;
@@ -55,11 +57,16 @@ Nopad.service('noteService', function() {
 				for(id in index) {
 					(function(id) {
 						chrome.storage.sync.get(id, function(body){
-							toExport.push(body);
-							csv += (id + ',' + new Date(index[id].date).toISOString() + ',' +
-								index[id].title + ',' + body[id] + '\r\n')
+							toExport.push({
+								'id': id,
+								'date': new Date(index[id].date).toISOString(),
+								'title': index[id].title,
+								'body': body[id]
+							});
 							
 							if (toExport.length == length) {
+								var csv = Papa.unparse(toExport);
+
 								var a = document.createElement("a");
 								document.body.appendChild(a);
 								a.style = "display: none";
@@ -75,24 +82,23 @@ Nopad.service('noteService', function() {
 				}
 			})
 		},
-		importNotes: function (file) {
+		importNotes: function (file, callback) {
 			if (file && file.name.split('.').pop() === 'csv') {
 				var reader = new FileReader();
-
+				var self = this;
 				reader.onload = function(e) {
-				  	var rawNotes = reader.result.split('\r\n');
-				  	console.log('raw', rawNotes);
-
+					var parsed = Papa.parse(reader.result, {header: true});
+					var rawNotes = parsed.data;
+					
 				  	if (rawNotes.length > 0) {
-						if (rawNotes[0] === 'id,date,title,body,') {
-							rawNotes.splice(0,1);
-						}
 						// TODO: Make background saving function to prevent max operations and increase efficiency 
-						if (rawNotes.length < 20) { 
+						if (rawNotes.length < 50) { 
 							angular.forEach(rawNotes, function (rawNote) {
-								var parts = rawNote.split(',');
-								var note = this.newNote(parts[2], parts[3], new Date(parts[1]), parts[0]);
-								note.save() // <- Save to sync issue background.saveLocalToSync();
+								var note = self.newNote(rawNote.title, rawNote.body, new Date(rawNote.date), rawNote.id);
+								note.save(function() {
+									background.saveLocalToSync()
+									callback();
+								});
 							});
 						}
 				  	}
