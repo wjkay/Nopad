@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html  ng-csp>
+<head><title>My Test Extension Options</title></head>
+<body ng-controller="optionsCtrl">
+
+<link rel="stylesheet" href="css/font-awesome.min.css">
+<link rel="stylesheet" href="css/main.css">
+
+<label ng-for="i in settingLabels">
+  {{i}}
+</label>
+
+<div id="status"></div>
+<button ng-click="save()"></button>
+
+
+<script src="js/lib/angular.min.js"></script>
+<script src="js/options.js"></script>
+
+</body>
+</html>

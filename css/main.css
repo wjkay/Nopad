@@ -38,7 +38,9 @@ label {font-size:10px;}
 	border:1px solid #3F85F4;
 	border-top:0;
 	margin-bottom:  -3px;
-	overflow: auto;resize: vertical;
+	overflow: auto;
+	resize: vertical;
+	font-family: Arial,sans-serif;
 }
 .note > span {
 	height: 12px;
@@ -56,7 +58,7 @@ label {font-size:10px;}
 	display: inline-block;
 	width: 188px;
 	border: 1px solid #3F85F4;
-	margin: -1px;
+	margin: -1px -1px 0 -1px;
 }
 .note-list > .scroll-container > .note-list-note:last-child {
 	margin-bottom: 35px;
@@ -146,6 +148,7 @@ cursor:pointer;
 .scroll-container {
 	position: absolute;
 	height: 100%;
+	top: 38px;
 	width: 188px;
 	overflow: auto;
 }
