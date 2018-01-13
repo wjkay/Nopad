@@ -1,8 +1,11 @@
-Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,focus) {
+Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService, config, focus) {
 	var background = chrome.extension.getBackgroundPage();
 	$scope.notes = [];
 	$scope.noteService = noteService;
 	$scope.autoSave = {};
+
+	$scope.config = config;
+	$scope.config.init();
 
 	// Minute timer for updating ui
 	resetFilterTimers();
@@ -63,6 +66,7 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 				if($scope.activeNote)
 					$scope.activeNote.active = false;
 				$scope.activeNote = note;
+				$scope.activeNote.titleCheck = note.title;
 				$scope.activeNote.active = true;
 				$scope.$apply();
 			});
@@ -75,7 +79,6 @@ Nopad.controller("noteCtrl", function ($scope, $interval, $timeout, noteService,
 			syncIndex = syncIndex.index
 			var foundActive = false;
 			for (i in syncIndex) {
-				console.log('Loading: ', syncIndex[i])
 				var note = noteService.newNote(syncIndex[i].title, null, new Date(syncIndex[i].date), i, syncIndex[i].active)
 				$scope.notes.push(note);
 				

@@ -33,20 +33,20 @@ function saveLocalToSync () {
 		}
 	});
 }
-function saveIt(note) {
-	chrome.storage.local.get(note.id, function (bodyObj) {
-		var body = bodyObj[note.id];
+function saveIt(obj) {
+	chrome.storage.local.get(obj.id, function (bodyObj) {
+		var body = bodyObj[obj.id];
 		// TODO: optimise and put all notes in?
 
 		if (operationsInMinute < 120 && operationsInHour < 1800) { 
 			var toSave = {};
-			toSave[note.id] = body;
+			toSave[obj.id] = body;
 			sync(toSave);
 
-			note.changed = false;
-			note.date = Date.now();
+			obj.changed = false;
+			obj.date = Date.now();
 
-			localIndex[note.id] = note;
+			localIndex[obj.id] = obj;
 			toSaveCount--;
 			if (!toSaveCount) {
 				sync({'index': localIndex})

@@ -28,6 +28,7 @@
         
         <script src="js/app/noteCtrl.js"></script>
         <script src="js/app/noteService.js"></script>
+        <script src="js/app/configService.js"></script>
     </head>
     <body ng-controller="noteCtrl">
         <header>
@@ -50,7 +51,7 @@
 			</h1>
         </header>
 		<div class="note" ng-show="activeNote">
-			<textarea ng-model="activeNote.body" ng-keyup="changed(activeNote);" maxlength=8000 focus-on="body"></textarea>
+			<textarea id="noteBody" ng-model="activeNote.body" ng-keyup="changed(activeNote);" maxlength=8000 focus-on="body"></textarea>
 			<span ng-show="activeNote.body.length > 4000">{{activeNote.body.length}} / 8000</span>
 		</div>
 		<div class="note-list">
